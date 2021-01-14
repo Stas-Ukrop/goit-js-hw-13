@@ -14,15 +14,10 @@ export default class NewApiService {
       })
       .then(data => {
         this.totalHits = data.totalHits;
-        console.log(this.totalHits);
-        this.incrementPage();
         return data;
       })
       .catch(err => console.log(err));
   }
-  // delay(ms) {
-  //   return new Promise(resolve => setTimeout(() => resolve(''), ms));
-  // }
   incrementPage() {
     this.page += 1;
   }

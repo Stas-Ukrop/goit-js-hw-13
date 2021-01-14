@@ -1,6 +1,5 @@
 import './styles.css';
 import articlesTpl from './template/card.hbs';
-import _ from 'lodash';
 import NewApiService from './js/apiService';
 import errorNotification from './js/errorPnotify';
 import * as basicLightbox from 'basiclightbox';
@@ -9,27 +8,24 @@ import 'basiclightbox/dist/basicLightbox.min.css';
 const refs = {
   inputText: document.querySelector('input[class="form-control"]'),
   outputText: document.querySelector('ul[class="gallery"]'),
+  clickButton: document.querySelector('button[class="tuch-me-if-you-want"]'),
   totalHit: null,
 };
 const newApiService = new NewApiService();
-refs.inputText.addEventListener(
-  'input',
-  _.debounce(e => {
-    e.preventDefault();
-    newApiService.query = refs.inputText.value;
-
-    newApiService.resetPage();
-    newApiService.fetchArticles().then(({ hits, totalHits }) => {
-      clearArticlesContainer();
-      refs.totalHit = totalHits;
-      appendArticlesMarkup(hits);
-    });
-  }, 1000),
-);
+refs.clickButton.addEventListener('click', e => {
+  e.preventDefault();
+  newApiService.query = refs.inputText.value;
+  newApiService.resetPage();
+  newApiService.fetchArticles().then(({ hits, totalHits }) => {
+    clearArticlesContainer();
+    refs.totalHit = totalHits;
+    appendArticlesMarkup(hits);
+  });
+});
 refs.outputText.addEventListener('click', e => {
-  if (e.target.localName==='img') {
+  if (e.target.localName === 'img') {
     const bigImg = e.target.dataset.big_img;
-      let myImg=`<img src=${bigImg}>`;
+    let myImg = `<img src=${bigImg}>`;
     const instance = basicLightbox.create(myImg);
     instance.show();
   }
@@ -54,7 +50,6 @@ function newImg() {
   };
 
   function handleImg(myLiImg, observer) {
-    console.log(myLiImg[myLiImg.length - 1].intersectionRatio);
     if (myLiImg[myLiImg.length - 1].intersectionRatio === 1) {
       if (refs.totalHit != document.querySelectorAll('li').length) {
         newApiService.incrementPage();
